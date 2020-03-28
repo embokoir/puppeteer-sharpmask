@@ -1,8 +1,18 @@
 const puppeteer = require('puppeteer')
 const fs = require('fs').promises
-const line = require('./line');
+const express = require('express')
+const line = require('./line')
 
-(async () => {
+const app = express()
+app.get('/', async (req, res) => {
+  await main()
+  await console.log('app ran')
+  await res.send('GET /')
+})
+app.listen(3000)
+console.log('Listening on 3000...')
+
+async function main() {
   const url = 'https://cocorolife.jp.sharp/mask/'
 
   const browser = await puppeteer.launch({
@@ -51,4 +61,4 @@ const line = require('./line');
 
   // Close
   await browser.close()
-})()
+}
