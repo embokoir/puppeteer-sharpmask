@@ -37,22 +37,23 @@ async function main() {
     return data
   })
 
-  const value1 = await page.$eval('#top1 > div > main > article > div.text', elm => elm.textContent.trim())
+  const value1 = await page.$eval('#top1 > div > main > article > div', elm => elm.textContent.trim())
         .catch(async err => {
           console.log(err)
-          process.exit(1)
         })
 
-  const value2 = await page.$eval('#top1 > div > main > article > div:nth-child(4) > span:nth-child(1)', elm => elm.textContent.trim())
+  const value2 = await page.$eval('#top1 > div > main > article > div > span:nth-child(1)', elm => elm.textContent.trim())
         .catch(async err => {
           console.log(err)
-          process.exit(1)
         })
 
-  if (!(value1 == prevValue1 && value2 === prevValue2)) {
+  // 値が異なる、または要素を見つけられない場合に通知
+  if ((!(value1 == prevValue1 && value2 === prevValue2)) || (!value1 || !value2)) {
     const text = `something changed!\ncheck ${url}`
     line.notify(text)
     slack.notify(text)
+  } else {
+    console.log('nothing to notify')
   }
   await fs.writeFile('value1.txt', new Uint8Array(Buffer.from(value1)), 'utf8', err => {
     if (err) throw err
