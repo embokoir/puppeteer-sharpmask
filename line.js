@@ -15,10 +15,10 @@ async function notify(text) {
     method: 'POST',
     data: params
   })
-    .then(res => Promise.resolve('Successfully Notified'))
+    .then(res => Promise.resolve('Successfully Notified to LINE'))
     .catch(err => {
       console.log(err.response.data)
-      Promise.reject('Notify error')
+      Promise.reject('Notify to LINE error')
     })
 }
 module.exports.notify = notify

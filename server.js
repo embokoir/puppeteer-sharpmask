@@ -1,7 +1,9 @@
 const puppeteer = require('puppeteer')
 const fs = require('fs').promises
 const express = require('express')
+
 const line = require('./line')
+const slack = require('./slack')
 
 const app = express()
 app.get('/', async (req, res) => {
@@ -48,7 +50,9 @@ async function main() {
         })
 
   if (!(value1 == prevValue1 && value2 === prevValue2)) {
-    line.notify(`something changed!\ncheck ${url}`)
+    const text = `something changed!\ncheck ${url}`
+    line.notify(text)
+    slack.notify(text)
   }
   await fs.writeFile('value1.txt', new Uint8Array(Buffer.from(value1)), 'utf8', err => {
     if (err) throw err
