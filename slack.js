@@ -1,7 +1,8 @@
 const axios = require('axios')
+const dotenv = require('dotenv').config()
 async function notify(text) {
   return axios({
-    url: 'https://hooks.slack.com/services/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',
+    url: process.env.SLACK_URL,
     method: 'POST',
     data: {
       text: text,
