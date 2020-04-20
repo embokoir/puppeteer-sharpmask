@@ -28,40 +28,27 @@ async function main() {
   })
   await page.goto(url, { waitUntil: 'domcontentloaded' })
 
-  const prevValue1 = await fs.readFile('value1.txt', 'utf8', (err, data) => {
-    if (err) console.log(err)
-    return data
-  })
-  const prevValue2 = await fs.readFile('value2.txt', 'utf8', (err, data) => {
+  const prevValue = await fs.readFile('value.txt', 'utf8', (err, data) => {
     if (err) console.log(err)
     return data
   })
 
-  const value1 = await page.$eval('#top1 > div > main > article > div', elm => elm.textContent.trim())
-        .catch(async err => {
-          console.log(err)
-        })
-
-  const value2 = await page.$eval('#top1 > div > main > article > div > span:nth-child(1)', elm => elm.textContent.trim())
+  const value = await page.$eval('body', elm => elm.textContent.trim())
         .catch(async err => {
           console.log(err)
         })
 
   // 値が異なる、または要素を見つけられない場合に通知
-  if ((!(value1 == prevValue1 && value2 === prevValue2)) || (!value1 || !value2)) {
+  if (!(value == prevValue) || !value) {
     const text = `something changed!\ncheck ${url}`
     line.notify(text)
     slack.notify(text)
   } else {
     console.log('nothing to notify')
   }
-  await fs.writeFile('value1.txt', new Uint8Array(Buffer.from(value1)), 'utf8', err => {
+  await fs.writeFile('value.txt', value, 'utf8', err => {
     if (err) throw err
-    console.log('new value1 set')
-  })
-  await fs.writeFile('value2.txt', new Uint8Array(Buffer.from(value2)), 'utf8', err => {
-    if (err) throw err
-    console.log('new value2 set')
+    console.log('new value set')
   })
 
   // Close
