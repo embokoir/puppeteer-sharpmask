@@ -15,7 +15,7 @@ app.listen(3000)
 console.log('Listening on 3000...')
 
 async function main() {
-  const url = 'https://cocorolife.jp.sharp/mask/'
+  const url = 'https://www.yamada-denkiweb.com/5724467016'
 
   const browser = await puppeteer.launch({
     headless: true,
@@ -33,14 +33,14 @@ async function main() {
     return data
   })
 
-  const value = await page.$eval('body', elm => elm.textContent.trim())
+  const value = await page.$eval('.note', elm => elm.textContent.trim())
         .catch(async err => {
           console.log(err)
         })
 
   // 値が異なる、または要素を見つけられない場合に通知
   if (!(value == prevValue) || !value) {
-    const text = `something changed!\ncheck ${url}`
+    const text = `Some change occured!\nCheck ${url}`
     line.notify(text)
     slack.notify(text)
   } else {
